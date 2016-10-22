@@ -1,6 +1,6 @@
-from . import source
+from . import dropbox
 
-Stream = source.DropboxTeam
+Stream = dropbox.DropboxTeam
 
 CONFIG = {
     "title": "Dropbox Team",
@@ -18,7 +18,7 @@ CONFIG = {
             "name": "endpoints",
             "required": True,
             "type": "list",
-            "values": map(lambda e: e["uri"], source.ENDPOINTS),
+            "values": map(lambda e: e["uri"], dropbox.ENDPOINTS),
             "dependencies": ["token"]
         },
         {

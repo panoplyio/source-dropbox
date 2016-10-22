@@ -1,9 +1,9 @@
 import io
 import json
 import unittest
-import source
 import urllib2
 import datetime
+import dropbox
 
 orig_urlopen = urllib2.urlopen
 
@@ -41,7 +41,7 @@ class TestDropboxTeam(unittest.TestCase):
             return io.BytesIO(json.dumps(res.pop(0)))
 
         urllib2.urlopen = urlopen
-        d = source.Stream({
+        d = dropbox.Stream({
             "token": "abc",
             "endpoints": [ "devices/list_members_devices" ]
         }, OPTIONS)
@@ -96,7 +96,7 @@ class TestDropboxTeam(unittest.TestCase):
             return io.BytesIO(json.dumps(res.pop(0)))
 
         urllib2.urlopen = urlopen
-        d = source.Stream({
+        d = dropbox.Stream({
             "token": "abc",
             "endpoints": [ "groups/list" ]
         }, OPTIONS)
@@ -154,7 +154,7 @@ class TestDropboxTeam(unittest.TestCase):
             return io.BytesIO(json.dumps(res.pop(0)))
 
         urllib2.urlopen = urlopen
-        d = source.Stream({
+        d = dropbox.Stream({
             "token": "abc",
             "endpoints": [ "linked_apps/list_members_linked_apps" ]
         }, OPTIONS)
@@ -211,7 +211,7 @@ class TestDropboxTeam(unittest.TestCase):
             return io.BytesIO(json.dumps(res.pop(0)))
 
         urllib2.urlopen = urlopen
-        d = source.Stream({
+        d = dropbox.Stream({
             "token": "abc",
             "endpoints": [ "members/list" ]
         }, OPTIONS)
@@ -308,7 +308,7 @@ class TestDropboxTeam(unittest.TestCase):
             return io.BytesIO(json.dumps(res.pop(0)))
 
         urllib2.urlopen = urlopen
-        d = source.Stream({
+        d = dropbox.Stream({
             "token": "abc",
             "endpoints": [ "log/get_events" ]
         }, OPTIONS)
@@ -347,7 +347,7 @@ class TestDropboxTeam(unittest.TestCase):
             }))
 
         urllib2.urlopen = urlopen
-        d = source.Stream({
+        d = dropbox.Stream({
             "token": "abc",
             "endpoints": [ "reports/get_activity" ]
         }, OPTIONS)
