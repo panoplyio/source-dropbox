@@ -8,8 +8,7 @@ setup(
     author_email="roi@panoply.io",
     url="http://panoply.io",
     install_requires=[
-        "panoply-python-sdk",
-        "dropbox"
+        "panoply-python-sdk"
     ],
 
     # place this package within the panoply package namespace
