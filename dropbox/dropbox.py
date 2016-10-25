@@ -8,6 +8,7 @@ import copy
 
 ONE_DAY = datetime.timedelta(1)
 PAST_DAYS = 30
+API_VERSION = 2
 
 ENDPOINTS = [
     { "uri": "devices/list_members_devices", "get": "devices" },
@@ -31,7 +32,7 @@ class DropboxTeam(panoply.DataSource):
         self._endpoints = map(lambda uri: Endpoint({
             "start_date": datetime.date.today() - past_days,
             "cursor": None,
-            "v": 2,
+            "v": API_VERSION,
             "get": None,
         }).extend([e for e in ENDPOINTS if e["uri"] == uri][0]), endpoints)
 
