@@ -16,6 +16,15 @@ class TestDropboxTeam(unittest.TestCase):
 
     def tearDown(self):
         urllib2.urlopen = orig_urlopen
+
+    def test_dest(self):
+        source = {
+            "token": "abc",
+            "endpoints": [ "devices/list_members_devices" ]
+        }
+
+        dropbox.Stream(source, OPTIONS)
+        self.assertEqual(source["destination"], "dropbox_teams")
     
     def test_list_members_devices(self):
         res = [
