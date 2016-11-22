@@ -27,6 +27,9 @@ class DropboxTeam(panoply.DataSource):
     def __init__(self, source, options):
         super(DropboxTeam, self).__init__(source, options)
 
+        if source.get("destination") is None:
+            source["destination"] = "dropbox_teams"
+
         past_days = datetime.timedelta(options.get("past_days", PAST_DAYS))
         endpoints = source.get("endpoints", [])
         self._endpoints = map(lambda uri: Endpoint({

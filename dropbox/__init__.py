@@ -20,14 +20,7 @@ CONFIG = {
             "type": "list",
             "values": map(lambda e: e["uri"], dropbox.ENDPOINTS),
             "dependencies": ["token"]
-        },
-        {
-            "name": "destination",
-            "required": True,
-            "dependencies": ["token"],
-            "default": "hello"
         }
-
     ],
     "categories": [ "API" ],
     "keywords": [ "events", "team", "audit" ],
