@@ -22,7 +22,7 @@ CONFIG = {
             "dependencies": ["token"]
         }
     ],
-    "categories": [ "API" ],
+    "categories": [ "APIS" ],
     "keywords": [ "events", "team", "audit" ],
     "createdAt": "2016-10-21"
 }
