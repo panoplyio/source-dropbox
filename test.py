@@ -7,10 +7,13 @@ import dropbox
 
 orig_urlopen = urllib2.urlopen
 
+BASE_URL = "https://api.dropboxapi.com/2/team"
+
 OPTIONS = {
-    "logger": lambda *msgs: None, # no-op logger
+    "logger": lambda *msgs: None,  # no-op logger
     "past_days": 3
 }
+
 
 class TestDropboxTeam(unittest.TestCase):
 
@@ -20,31 +23,32 @@ class TestDropboxTeam(unittest.TestCase):
     def test_dest(self):
         source = {
             "token": "abc",
-            "endpoints": [ "devices/list_members_devices" ]
+            "endpoints": ["devices/list_members_devices"]
         }
 
         dropbox.Stream(source, OPTIONS)
         self.assertEqual(source["destination"], "dropbox_teams")
-    
+
     def test_list_members_devices(self):
         res = [
             {
                 "devices": [
-                    { "hello": "world"},
-                    { "foo": "bar"}
+                    {"hello": "world"},
+                    {"foo": "bar"}
                 ],
                 "has_more": True,
                 "cursor": "111"
             },
             {
                 "devices": [
-                    { "alice": "bob" }
+                    {"alice": "bob"}
                 ],
                 "has_more": False
             }
         ]
 
         reqs = []
+
         def urlopen(req):
             reqs.append(req)
             return io.BytesIO(json.dumps(res.pop(0)))
@@ -52,26 +56,26 @@ class TestDropboxTeam(unittest.TestCase):
         urllib2.urlopen = urlopen
         d = dropbox.Stream({
             "token": "abc",
-            "endpoints": [ "devices/list_members_devices" ]
+            "endpoints": ["devices/list_members_devices"]
         }, OPTIONS)
-        
+
         data = d.read()
 
         self.assertEqual(data, [
-            { "hello": "world"},
-            { "foo": "bar"}
+            {"hello": "world"},
+            {"foo": "bar"}
         ])
 
         self.assertEqual(len(reqs), 1)
 
-        expected = "https://api.dropboxapi.com/2/team/devices/list_members_devices"
-        self.assertEqual(reqs[0].get_full_url(), expected)
+        url = "{}/devices/list_members_devices".format(BASE_URL)
+        self.assertEqual(reqs[0].get_full_url(), url)
         self.assertEqual(reqs[0].get_data(), '{}')
 
         # read more
         data = d.read()
         self.assertEqual(data, [
-            { "alice": "bob" }
+            {"alice": "bob"}
         ])
 
         self.assertEqual(len(reqs), 2)
@@ -85,21 +89,22 @@ class TestDropboxTeam(unittest.TestCase):
         res = [
             {
                 "groups": [
-                    { "hello": "world"},
-                    { "foo": "bar"}
+                    {"hello": "world"},
+                    {"foo": "bar"}
                 ],
                 "has_more": True,
                 "cursor": "111"
             },
             {
                 "groups": [
-                    { "alice": "bob" }
+                    {"alice": "bob"}
                 ],
                 "has_more": False
             }
         ]
 
         reqs = []
+
         def urlopen(req):
             reqs.append(req)
             return io.BytesIO(json.dumps(res.pop(0)))
@@ -107,19 +112,19 @@ class TestDropboxTeam(unittest.TestCase):
         urllib2.urlopen = urlopen
         d = dropbox.Stream({
             "token": "abc",
-            "endpoints": [ "groups/list" ]
+            "endpoints": ["groups/list"]
         }, OPTIONS)
-        
+
         data = d.read()
 
         self.assertEqual(data, [
-            { "hello": "world"},
-            { "foo": "bar"}
+            {"hello": "world"},
+            {"foo": "bar"}
         ])
 
         self.assertEqual(len(reqs), 1)
 
-        expected = "https://api.dropboxapi.com/2/team/groups/list"
+        expected = "{}/groups/list".format(BASE_URL)
         self.assertEqual(reqs[0].get_full_url(), expected)
         self.assertEqual(reqs[0].get_data(), "{}")
 
@@ -127,11 +132,11 @@ class TestDropboxTeam(unittest.TestCase):
         data = d.read()
 
         self.assertEqual(data, [
-            { "alice": "bob" }
+            {"alice": "bob"}
         ])
 
         self.assertEqual(len(reqs), 2)
-        expected = "https://api.dropboxapi.com/2/team/groups/list/continue"
+        expected = "{}/groups/list/continue".format(BASE_URL)
         self.assertEqual(reqs[1].get_full_url(), expected)
         self.assertEqual(reqs[1].get_data(), '{"cursor": "111"}')
 
@@ -143,21 +148,22 @@ class TestDropboxTeam(unittest.TestCase):
         res = [
             {
                 "apps": [
-                    { "hello": "world"},
-                    { "foo": "bar"}
+                    {"hello": "world"},
+                    {"foo": "bar"}
                 ],
                 "has_more": True,
                 "cursor": "111"
             },
             {
                 "apps": [
-                    { "alice": "bob" }
+                    {"alice": "bob"}
                 ],
                 "has_more": False
             }
         ]
 
         reqs = []
+
         def urlopen(req):
             reqs.append(req)
             return io.BytesIO(json.dumps(res.pop(0)))
@@ -165,19 +171,19 @@ class TestDropboxTeam(unittest.TestCase):
         urllib2.urlopen = urlopen
         d = dropbox.Stream({
             "token": "abc",
-            "endpoints": [ "linked_apps/list_members_linked_apps" ]
+            "endpoints": ["linked_apps/list_members_linked_apps"]
         }, OPTIONS)
-        
+
         data = d.read()
 
         self.assertEqual(data, [
-            { "hello": "world"},
-            { "foo": "bar"}
+            {"hello": "world"},
+            {"foo": "bar"}
         ])
 
         self.assertEqual(len(reqs), 1)
 
-        expected = "https://api.dropboxapi.com/2/team/linked_apps/list_members_linked_apps"
+        expected = "{}/linked_apps/list_members_linked_apps".format(BASE_URL)
         self.assertEqual(reqs[0].get_full_url(), expected)
         self.assertEqual(reqs[0].get_data(), '{}')
 
@@ -185,7 +191,7 @@ class TestDropboxTeam(unittest.TestCase):
         data = d.read()
 
         self.assertEqual(data, [
-            { "alice": "bob" }
+            {"alice": "bob"}
         ])
 
         self.assertEqual(len(reqs), 2)
@@ -200,21 +206,22 @@ class TestDropboxTeam(unittest.TestCase):
         res = [
             {
                 "members": [
-                    { "hello": "world"},
-                    { "foo": "bar"}
+                    {"hello": "world"},
+                    {"foo": "bar"}
                 ],
                 "has_more": True,
                 "cursor": "111"
             },
             {
                 "members": [
-                    { "alice": "bob" }
+                    {"alice": "bob"}
                 ],
                 "has_more": False
             }
         ]
 
         reqs = []
+
         def urlopen(req):
             reqs.append(req)
             return io.BytesIO(json.dumps(res.pop(0)))
@@ -222,19 +229,19 @@ class TestDropboxTeam(unittest.TestCase):
         urllib2.urlopen = urlopen
         d = dropbox.Stream({
             "token": "abc",
-            "endpoints": [ "members/list" ]
+            "endpoints": ["members/list"]
         }, OPTIONS)
-        
+
         data = d.read()
 
         self.assertEqual(data, [
-            { "hello": "world"},
-            { "foo": "bar"}
+            {"hello": "world"},
+            {"foo": "bar"}
         ])
 
         self.assertEqual(len(reqs), 1)
 
-        expected = "https://api.dropboxapi.com/2/team/members/list"
+        expected = "{}/members/list".format(BASE_URL)
         self.assertEqual(reqs[0].get_full_url(), expected)
         self.assertEqual(reqs[0].get_data(), '{}')
 
@@ -242,7 +249,7 @@ class TestDropboxTeam(unittest.TestCase):
         data = d.read()
 
         self.assertEqual(data, [
-            { "alice": "bob" }
+            {"alice": "bob"}
         ])
 
         self.assertEqual(len(reqs), 2)
@@ -301,17 +308,18 @@ class TestDropboxTeam(unittest.TestCase):
         }
         res = [
             {
-                "events": [ ev1, ev2 ],
+                "events": [ev1, ev2],
                 "has_more": True,
                 "cursor": "111"
             },
             {
-                "events": [ ev3 ],
+                "events": [ev3],
                 "has_more": False
             }
         ]
 
         reqs = []
+
         def urlopen(req):
             reqs.append(req)
             return io.BytesIO(json.dumps(res.pop(0)))
@@ -319,9 +327,9 @@ class TestDropboxTeam(unittest.TestCase):
         urllib2.urlopen = urlopen
         d = dropbox.Stream({
             "token": "abc",
-            "endpoints": [ "log/get_events" ]
+            "endpoints": ["log/get_events"]
         }, OPTIONS)
-        
+
         data = d.read()
 
         self.assertEqual(data, [ev1, ev2])
@@ -345,20 +353,20 @@ class TestDropboxTeam(unittest.TestCase):
         data = d.read()
         self.assertEqual(data, None)
 
-
     def test_get_activity(self):
         reqs = []
+
         def urlopen(req):
             reqs.append(req)
             return io.BytesIO(json.dumps({
-                "adds": [1,2,3],
-                "edits": [4,5,6],
+                "adds": [1, 2, 3],
+                "edits": [4, 5, 6]
             }))
 
         urllib2.urlopen = urlopen
         d = dropbox.Stream({
             "token": "abc",
-            "endpoints": [ "reports/get_activity" ]
+            "endpoints": ["reports/get_activity"]
         }, OPTIONS)
 
         today = datetime.date.today()
@@ -372,19 +380,14 @@ class TestDropboxTeam(unittest.TestCase):
                 "start_date": start.isoformat(),
                 "end_date": end.isoformat()
             }))
-            self.assertEqual(data, [{ "adds": [1,2,3], "edits": [4,5,6] }])
+            self.assertEqual(data, [{"adds": [1, 2, 3], "edits": [4, 5, 6]}])
 
-        
-        expected = "https://api.dropboxapi.com/2/team/reports/get_activity"
+        expected = "{}/reports/get_activity".format(BASE_URL)
         self.assertEqual(reqs[0].get_full_url(), expected)
 
         # should be done
         data = d.read()
         self.assertEqual(data, None)
-
-
-
-        
 
 
 # fire it up.

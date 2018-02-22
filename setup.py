@@ -10,6 +10,13 @@ setup(
     install_requires=[
         "panoply-python-sdk"
     ],
+    extras_require={
+        "test": [
+            "pycodestyle==2.3.1",
+            "coverage==4.3.4",
+            "pytest==3.2.1"
+        ]
+    },
 
     # place this package within the panoply package namespace
     package_dir={"panoply": ""},
