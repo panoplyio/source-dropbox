@@ -23,6 +23,7 @@ class TestDropboxTeam(unittest.TestCase):
     def test_get_endpoints(self):
         def test_for_code(code, msg):
             httpError = urllib2.HTTPError('msg', code, *[None] * 3)
+
             def urlopen(req):
                 raise httpError
 
@@ -44,7 +45,6 @@ class TestDropboxTeam(unittest.TestCase):
         urllib2.urlopen = urlopen
         endpoints = dropbox.get_endpoints('token')
         self.assertEqual(endpoints, dropbox.ENDPOINTS)
-
 
     def test_dest(self):
         source = {
