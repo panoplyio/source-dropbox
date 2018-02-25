@@ -125,10 +125,10 @@ def get_endpoints(token):
         # sample request to validate the token
         request(token, "groups/list", {"limit": 1})
     except urllib2.HTTPError as e:
-        print(e.code)
         if(e.code in [401, 400]):
             raise Exception(AUTH_ERROR_MSG)
-        raise e
+        else:
+            raise Exception(VALIDATE_ERROR_MSG)
     except Exception as e:
         raise Exception(VALIDATE_ERROR_MSG)
 
