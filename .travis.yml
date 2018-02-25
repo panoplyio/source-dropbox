@@ -11,6 +11,7 @@ install:
 
 # Each step below must succeed for the build to pass
 script:
-    - coverage run --source=adwords test.py
+    - coverage run --source=dropbox test.py
     - coverage report -m
     - pycodestyle --format=pylint --exclude=__init__.py .
+    
