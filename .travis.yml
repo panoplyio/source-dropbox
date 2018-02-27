@@ -7,8 +7,11 @@ branches:
    - master
 
 install:
-    - pip install .
+    - pip install .[test]
 
 # Each step below must succeed for the build to pass
 script:
-    - python ./test.py
+    - coverage run --source=dropbox test.py
+    - coverage report -m
+    - pycodestyle --format=pylint --exclude=__init__.py .
+    

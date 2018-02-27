@@ -18,7 +18,9 @@ CONFIG = {
             "name": "endpoints",
             "required": True,
             "type": "list",
-            "values": map(lambda e: e["uri"], dropbox.ENDPOINTS),
+            "values": lambda source: map(lambda e: e["uri"], dropbox.get_endpoints(source.get('token'))),
+            "help": "Note that the log/get_events/ endpoint require team auditing access type.",
+            "link": "https://www.dropbox.com/developers/documentation/http/teams",
             "dependencies": ["token"]
         }
     ],

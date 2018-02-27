@@ -5,22 +5,29 @@ import sys
 import urllib2
 import datetime
 import copy
+from urllib import urlencode
 
 ONE_DAY = datetime.timedelta(1)
 PAST_DAYS = 30
 API_VERSION = 2
 
+AUTH_ERROR_MSG = ('Authentication failed. Please check'
+                  ' your credentials and try again')
+VALIDATE_ERROR_MSG = ('An unexpected error occured while validating'
+                      ' your credentials, please contact support')
+
 ENDPOINTS = [
-    { "uri": "devices/list_members_devices", "get": "devices" },
-    { "uri": "groups/list", "continue": True, "get": "groups" },
-    { "uri": "linked_apps/list_members_linked_apps", "get": "apps" },
-    { "uri": "members/list", "continue": True, "get": "members" },
-    { "uri": "log/get_events", "get": "events", "v": 1},
-    { "uri": "reports/get_activity" },
-    { "uri": "reports/get_devices" },
-    { "uri": "reports/get_membership" },
-    { "uri": "reports/get_storage" },
+    {"uri": "devices/list_members_devices", "get": "devices"},
+    {"uri": "groups/list", "continue": True, "get": "groups"},
+    {"uri": "linked_apps/list_members_linked_apps", "get": "apps"},
+    {"uri": "members/list", "continue": True, "get": "members"},
+    {"uri": "log/get_events", "get": "events", "v": 1},
+    {"uri": "reports/get_activity"},
+    {"uri": "reports/get_devices"},
+    {"uri": "reports/get_membership"},
+    {"uri": "reports/get_storage"},
 ]
+
 
 class DropboxTeam(panoply.DataSource):
 
@@ -39,10 +46,9 @@ class DropboxTeam(panoply.DataSource):
             "get": None,
         }).extend([e for e in ENDPOINTS if e["uri"] == uri][0]), endpoints)
 
-
     def read(self):
         if len(self._endpoints) == 0:
-            return None # we're done here.
+            return None  # we're done here.
 
         # get & read from the next endpoint
         endpoint = self._endpoints[0]
@@ -63,7 +69,6 @@ class DropboxTeam(panoply.DataSource):
 
         return res
 
-
     def _read_endpoint(self, endpoint):
         uri = endpoint["uri"]
 
@@ -78,7 +83,7 @@ class DropboxTeam(panoply.DataSource):
                 uri += "/continue"
 
         # issue the http request
-        res = self._request(uri, data, apiversion = endpoint["v"])
+        res = self._request(uri, data, apiversion=endpoint["v"])
 
         # update the cursor to determine if we can keep going.
         endpoint["cursor"] = res.get("cursor")
@@ -98,21 +103,39 @@ class DropboxTeam(panoply.DataSource):
 
         return [res], endpoint["start_date"] < datetime.date.today()
 
-    def _request(self, uri, data, apiversion = "2"):
-        data = json.dumps(data)
-        url = "https://api.dropboxapi.com/%s/team/%s" % (apiversion, uri)
-        req = urllib2.Request(url, data)
-        req.add_header("Authorization", "Bearer %s" % self.source.get("token"))
-        req.add_header("Content-Type", "application/json")
-
+    def _request(self, uri, data, apiversion="2"):
         self.log("POST", uri)
-        res = urllib2.urlopen(req)
-        body = res.read()
-        return json.loads(body)
+        return request(self.source.get("token"), uri, data, apiversion)
+
+
+def request(token, uri, data, apiversion="2"):
+    data = json.dumps(data)
+    url = "https://api.dropboxapi.com/%s/team/%s" % (apiversion, uri)
+    req = urllib2.Request(url, data)
+    req.add_header("Authorization", "Bearer %s" % token)
+    req.add_header("Content-Type", "application/json")
+    res = urllib2.urlopen(req)
+    body = res.read()
+    return json.loads(body)
+
+
+def get_endpoints(token):
+
+    try:
+        # sample request to validate the token
+        request(token, "groups/list", {"limit": 1})
+    except urllib2.HTTPError as e:
+        if(e.code in [401, 400]):
+            raise Exception(AUTH_ERROR_MSG)
+        else:
+            raise Exception(VALIDATE_ERROR_MSG)
+    except Exception as e:
+        raise Exception(VALIDATE_ERROR_MSG)
+
+    return ENDPOINTS
 
 
 class Endpoint(dict):
     def extend(self, *args):
         self.update(*args)
         return self
-
