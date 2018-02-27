@@ -13,7 +13,7 @@ API_VERSION = 2
 
 AUTH_ERROR_MSG = ('Authentication failed. Please check'
                   ' your credentials and try again')
-VALIDATE_ERROR_MSG = ('An unexpected error occured while validating'
+VALIDATE_ERROR_MSG = ('An unexpected error occurred while validating'
                       ' your credentials, please contact support')
 
 ENDPOINTS = [
